@@ -35,7 +35,7 @@ namespace ExpressionParserTests
         {
             SumParser test = new SumParser();
             int val = 0;
-            bool isValid = test.EvaluateExpression(expression, out val);
+            bool isValid = test.Evaluate(expression, out val);
 
             Assert.Equal(expectedValid, isValid);
             Assert.Equal(expected, val);

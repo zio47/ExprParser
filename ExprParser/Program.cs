@@ -8,13 +8,12 @@ namespace ExpressionParser
         static void Main(string[] args)
         {
             SumParser sumParser = new SumParser();
-            int sumResult = 0;
             string sum = "4 + (12 /(1 * 2))";
-            bool parseResult = sumParser.EvaluateExpression(sum, out sumResult);
+            bool parseResult = sumParser.Evaluate(sum, out int sumResult);
             Console.WriteLine(parseResult + " " + sumResult);
         }
 
-        public bool EvaluateExpression(string expression, out int result)
+        public bool Evaluate(string expression, out int result)
         {
             bool valid = true;
             result = 0;
@@ -147,17 +146,29 @@ namespace ExpressionParser
             int answer = 0;
             isStillValid = true;
 
+            // if the expression is a single number, parse and return number
             if (parts.Count == 1)
             {
-                answer = Int32.Parse(parts[0]);
+                bool singleNum = Int32.TryParse(parts[0], out answer);
+                if (!singleNum)
+                {
+                    isStillValid = false;
+                    return 0;
+                }
             }
 
             for (int i = 0; i < parts.Count; i++)
             {
                 if (i % 2 != 0)
                 {
-                    int firstNum = Int32.Parse(parts[i - 1]);
-                    int secondNum = Int32.Parse(parts[i + 1]);
+                    bool firstPar = Int32.TryParse(parts[i - 1], out int firstNum);
+                    bool secPar = Int32.TryParse(parts[i + 1], out int secondNum);
+
+                    if(!firstPar || !secPar)
+                    {
+                        isStillValid = false;
+                        return 0;
+                    }
 
                     // Checks the symbols and performs the appropriate calculation
                     if (parts[i] == "+")
@@ -185,7 +196,7 @@ namespace ExpressionParser
                         else
                         {
                             isStillValid = false;
-                            answer = 0;
+                            return 0;
                         }
                     }
                 }
